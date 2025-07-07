@@ -1,6 +1,10 @@
 {
   "welcome": "¡Bienvenido, {{name}}!",
   "description": "Esta aplicación soporta varios idiomas.",
-  "date": "Hoy es {{date, datetime}}."
+  "date": "Hoy es {{date, datetime}}." ,
+  "user" : {
+    "name": "riajul ESPANISH"
+  }
+
 }
 

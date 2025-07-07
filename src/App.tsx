@@ -16,6 +16,7 @@ export default function App() {
         }  
       </h1>
       <p className="mb-4">{t("description")}</p>
+      <p className="mb-4">{t("user.name")}</p>
       <p className="mb-4">{t("date", { date: new Date() })}</p>
       <div className="flex gap-2">
         <button
