@@ -1,0 +1,6 @@
+{
+  "welcome": "Welcome, {{name}}!",
+  "description": "This app supports multiple languages.",
+  "date": "Today is {{date, datetime}}."
+}
+
