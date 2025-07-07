@@ -1,69 +1,119 @@
-# React + TypeScript + Vite
+## Multi-language i18n
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+/src
+  /i18n
+    en.json
+    es.json
+  App.tsx
+  i18n.ts
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+#### /src/i18n/en.json
+```
+{
+  "welcome": "Welcome, {{name}}!",
+  "description": "This app supports multiple languages.",
+  "date": "Today is {{date, datetime}}.",
+  "user" : {
+    "name": "riajul"
+  }
+}
+```
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
+#### /src/i18n/es.json
+```
+{
+  "welcome": "Welcome, {{name}}!",
+  "description": "This app supports multiple languages.",
+  "date": "Today is {{date, datetime}}.",
+  "user" : {
+    "name": "riajul"
+  }
+}
+```
+
+
+#### src/i18n.ts
+```
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+import LanguageDetector from "i18next-browser-languagedetector";
+import en from "./i18n/en.json";
+import es from "./i18n/es.json";
+
+i18n
+  .use(LanguageDetector) // auto-detect user's language
+  .use(initReactI18next) // pass i18n instance to react-i18next
+  .init({
+    resources: {
+      en: { translation: en },
+      es: { translation: es },
     },
-  },
-])
+    fallbackLng: "en", // use English if detection fails
+    interpolation: {
+      escapeValue: false, // react already escapes
+      format: (value, format) => {
+        if (format === "datetime" && value instanceof Date) {
+          return value.toLocaleDateString(i18n.language, {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+        }
+        return value;
+      },
+    },
+    detection: {
+      order: ["localStorage", "navigator"], // check localStorage, then browser language
+      caches: ["localStorage"], // store selected language
+    },
+  });
+
+export default i18n;
+
+```
+
+
+#### src/App.tsx
+```
+import { useTranslation } from "react-i18next";
+import "./i18n"; // import i18n config once
+
+export default function App() {
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center p-4">
+      <h1 className="text-3xl font-bold mb-4">
+        {
+          t("welcome", { name: "Riajul" }) // => en.json .welcome + variable name
+        }  
+      </h1>
+      <p className="mb-4">{t("description")}</p>
+      <p className="mb-4">{t("user.name")}</p>
+      <p className="mb-4">{t("date", { date: new Date() })}</p>
+      <div className="flex gap-2">
+        <button
+          onClick={() => changeLanguage("en")}  // => i18n.init().resources.en    
+          className="px-4 py-2 bg-blue-500 text-white rounded"
+        >
+          English
+        </button>
+        <button
+          onClick={() => changeLanguage("es")}
+          className="px-4 py-2 bg-green-500 text-white rounded"
+        >
+          Español
+        </button>
+      </div>
+    </div>
+  );
+}
 ```
