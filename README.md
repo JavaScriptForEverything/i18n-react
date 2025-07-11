@@ -2,13 +2,6 @@
 
 #### Directory Structure
 ```
-/src
-  /i18n
-    en.json
-    es.json
-  App.tsx
-  i18n.ts
-
 .
 ├── src
 │   ├── i18n
