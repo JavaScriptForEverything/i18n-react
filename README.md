@@ -1,5 +1,6 @@
 ## Multi-language i18n
 
+#### Directory Structure
 ```
 /src
   /i18n
@@ -7,8 +8,24 @@
     es.json
   App.tsx
   i18n.ts
+
+.
+├── src
+│   ├── i18n
+│   │   ├── en.json
+│   │   └── es.json
+│   │
+│   ├── i18n.ts
+│   │
+│   ├── App.tsx
+│   
 ```
 
+#### Install packages
+```
+$ yarn add i18next react-i18next i18next-http-backend i18next-browser-languagedetector
+
+```
 
 #### /src/i18n/en.json
 ```
