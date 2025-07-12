@@ -4,6 +4,9 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import en from "./i18n/en.json";
 import es from "./i18n/es.json";
 
+export const supportedLanguages = ["en", "es" ]; 	// need to add manually too
+
+
 i18n
   .use(LanguageDetector) // auto-detect user's language
   .use(initReactI18next) // pass i18n instance to react-i18next
@@ -12,9 +15,10 @@ i18n
       en: { translation: en },
       es: { translation: es },
     },
-    fallbackLng: "en", // use English if detection fails
+    fallbackLng: "en", 
+    supportedLngs: supportedLanguages, 
     interpolation: {
-      escapeValue: false, // react already escapes
+      escapeValue: false, 
       format: (value, format) => {
         if (format === "datetime" && value instanceof Date) {
           return value.toLocaleDateString(i18n.language, {

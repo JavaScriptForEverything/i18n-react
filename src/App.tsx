@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
-import "./i18n"; // import i18n config once
+import i18n, { supportedLanguages } from './i18n'
 
 export default function App() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
@@ -19,7 +19,8 @@ export default function App() {
       <p className="mb-4">{t("user.name")}</p>
       <p className="mb-4">{t("date", { date: new Date() })}</p>
       <div className="flex gap-2">
-        <button
+
+        {/* <button
           onClick={() => changeLanguage("en")}  // => i18n.init().resources.en    
           className="px-4 py-2 bg-blue-500 text-white rounded"
         >
@@ -30,7 +31,30 @@ export default function App() {
           className="px-4 py-2 bg-green-500 text-white rounded"
         >
           Español
-        </button>
+        </button> */}
+
+				{supportedLanguages.map( lan => (
+					<button key={lan}
+						onClick={() => changeLanguage(lan)}
+						className="px-4 py-2 bg-green-500 text-white rounded"
+					>
+						{lan}
+					</button>
+				))}
+
+				<select
+					className="mt-4 p-2 border rounded"
+					value={i18n.language}
+					onChange={(e) => changeLanguage(e.target.value)}
+				>
+					{supportedLanguages.map((lng) => (
+						<option key={lng} value={lng}>
+							{lng.toUpperCase()}
+						</option>
+					))}
+				</select>
+
+
       </div>
     </div>
   );
